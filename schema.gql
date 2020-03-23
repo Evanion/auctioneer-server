@@ -1,0 +1,65 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type BankIDAuth {
+  autoStartToken: ID!
+  orderRef: String!
+}
+
+input BankIDAuthInput {
+  personalNumber: String
+}
+
+type BankIDCollectStatus {
+  status: CollectStatus!
+}
+
+enum CollectStatus {
+  pending
+  failed
+  complete
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+"""
+The `Date` scalar type represents a milliseconds datetime in linux epoch format.
+"""
+scalar Date
+
+type Mutation {
+  createUser(user: CreateUserInput!): User!
+  updateUser(user: UpdateUserInput!): User!
+  bankidAuth(payload: BankIDAuthInput!): BankIDAuth!
+}
+
+type Query {
+  users: [User!]!
+  user(id: String!): User!
+  test: BankIDCollectStatus!
+}
+
+type Subscription {
+  bankidCollect: BankIDCollectStatus!
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  email: String
+  password: String
+}
+
+type User {
+  id: ID!
+  username: String!
+  pnr: String!
+  email: String!
+  createdAt: Date!
+  updatedAt: Date
+}
