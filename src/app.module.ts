@@ -1,22 +1,23 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { BankIDService } from './bankid/bankid.service';
-import { BankIDModule } from './bankid/bankid.module';
+//import { UsersModule } from './users/users.module';
+//import { AuthenticationModule } from './authentication/authentication.module';
+//import { BankIDService } from './bankid/bankid.service';
+//import { BankIDModule } from './bankid/bankid.module';
 import { CommonModule } from './common/common.module';
 // import { AuctionsModule } from './auctions/auctions.module';
-import { MongooseModule } from '@nestjs/mongoose';
+//import { MongooseModule } from '@nestjs/mongoose';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
-    HttpModule,
-    MongooseModule.forRoot('mongodb://localhost/auctioneer', {
+    //HttpModule,
+    /*MongooseModule.forRoot('mongodb://localhost/auctioneer', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    }),
+    }),*/
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       context({ req }) {
@@ -40,12 +41,13 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     }),
     CommonModule,
-    BankIDModule,
-    UsersModule,
-    AuthenticationModule,
+    //BankIDModule,
+    //UsersModule,
+    //AuthenticationModule,
+    TestModule,
     //AuctionsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BankIDService],
+  providers: [AppService /*BankIDService*/],
 })
 export class AppModule {}
