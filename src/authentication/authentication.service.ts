@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { BankIDService } from '../bankid/bankid.service';
 import { Inject } from '@nestjs/common';
 import { BankIDAuthInput } from './dto/bankidAuth.input';
-import { BankIDAuthResponse } from 'src/bankid/interfaces/bankid.interfaces';
-import { luhn } from 'src/utils/validation/luhn';
+import { BankIDAuthResponse } from '../bankid/interfaces/bankid.interfaces';
+import { luhn } from '../utils/validation/luhn';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,9 +15,9 @@ export class AuthenticationService {
   ): Promise<BankIDAuthResponse> {
     try {
       const { personalNumber } = payload;
+      console.log('personalNumber', personalNumber);
       const { data } = await this.bankidService.auth({
-        personalNumber:
-          personalNumber && luhn(personalNumber) ? personalNumber : undefined,
+        personalNumber: personalNumber ? personalNumber : undefined,
         endUserIp,
       });
 

@@ -2,9 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Codename {
+type Auction {
+  id: ID!
+  seller: User!
+}
+
+type BankIDAuth {
+  autoStartToken: ID!
+  orderRef: String!
+}
+
+input BankIDAuthInput {
+  personalNumber: String
+}
+
+type BankIDCollectResponse {
+  status: String!
+  hintCode: String
   now: Date!
-  text: String!
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
 }
 
 """
@@ -12,10 +33,36 @@ The `Date` scalar type represents a milliseconds datetime in linux epoch format.
 """
 scalar Date
 
+type Mutation {
+  createUser(user: CreateUserInput!): User!
+  updateUser(user: UpdateUserInput!): User!
+  createAuction: Auction!
+}
+
 type Query {
-  test: Codename!
+  users: [User!]!
+  user(id: String!): User!
+  bankidAuth(payload: BankIDAuthInput!): BankIDAuth!
+  features: [String!]!
+  feature(feature: String!): Boolean!
 }
 
 type Subscription {
-  testSub: Codename!
+  bankidCollect(orderRef: String!): BankIDCollectResponse!
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  email: String
+  password: String
+}
+
+type User {
+  id: ID!
+  username: String!
+  pnr: String!
+  email: String!
+  createdAt: Date!
+  updatedAt: Date
 }

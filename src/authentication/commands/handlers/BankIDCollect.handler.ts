@@ -20,18 +20,19 @@ export class BankIDCollectHandler
   async execute(command: BankIDCollectCommand) {
     // @ts-ignore
     const { orderRef } = command;
-    console.log('BankIDCollectCommand', command);
     this.bankidService
       .collect(orderRef)
       .pipe(
-        repeatWhen(notifier => notifier.pipe(delay(2000))),
+        repeatWhen((notifier) => notifier.pipe(delay(2000))),
         takeWhile(({ data }: AxiosResponse<BankIDCollectResponse>) => {
           console.log('result', data);
           return data.status === CollectStatus.pending;
-        }),
+        }, true),
       )
       .subscribe(({ data }: AxiosResponse<BankIDCollectResponse>) => {
-        return this.pubSub.publish('bankidCollect', data);
+        return this.pubSub.publish('bankidCollect', {
+          bankidCollect: { ...data, now: new Date() },
+        });
       });
   }
 }

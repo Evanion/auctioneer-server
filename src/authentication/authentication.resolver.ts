@@ -12,12 +12,9 @@ import { BankIDAuthInput } from './dto/bankidAuth.input';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'apollo-server-express';
 import { PUB_SUB } from '../common/providers/pubsub';
-import { BankIDCollectStatus } from './models/bankidCollectStatus';
+import { BankIDCollectResponse } from './models/bankidCollectResponse';
 import { AuthenticationService } from './authentication.service';
 import { BankIDCollectCommand } from './commands/impl/BankidCollect.command';
-import { CollectStatus } from '../bankid/interfaces/bankid.interfaces';
-
-const pubSub = new PubSub();
 
 @Resolver('Authentication')
 export class AuthenticationResolver {
@@ -25,7 +22,7 @@ export class AuthenticationResolver {
   @Inject() private readonly authService: AuthenticationService;
   @Inject(PUB_SUB) private readonly pubSub: PubSub;
 
-  @Mutation((returns) => BankIDAuth)
+  @Query((returns) => BankIDAuth)
   async bankidAuth(
     @Args('payload') payload: BankIDAuthInput,
     @Context() ctx: { ip: string },
@@ -36,22 +33,14 @@ export class AuthenticationResolver {
     return result;
   }
 
-  @Query((returns) => BankIDCollectStatus)
-  test() {
-    const result: BankIDCollectStatus = {
-      status: CollectStatus.pending,
-    };
-    pubSub.publish('bankidCollect', { bankidCollect: result });
-    return result;
-  }
-
-  @Subscription((returns) => BankIDCollectStatus, {
-    /*filter: (payload, variables) => {
+  @Subscription((returns) => BankIDCollectResponse, {
+    filter: (payload, variables) => {
       return payload.bankidCollect.orderRef === variables.orderRef;
-    },*/
+    },
   })
-  bankidCollect() {
-    // @Args({ name: 'orderRef', type: () => String }) orderRef: string,
-    return pubSub.asyncIterator('bankidCollect');
+  bankidCollect(
+    @Args({ name: 'orderRef', type: () => String }) orderRef: string,
+  ) {
+    return this.pubSub.asyncIterator('bankidCollect');
   }
 }
